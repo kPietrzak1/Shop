@@ -1,5 +1,6 @@
 package pl.kpietrzak.sklep.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,29 +15,37 @@ public class CartItemController {
 
     private final CartItemService cartItemService;
 
+    @Autowired
     public CartItemController(CartItemService cartItemService) {
         this.cartItemService = cartItemService;
     }
 
-    @GetMapping("/{cartId}")
-    public ResponseEntity<List<CartItem>> getCartItemsByCartId(@PathVariable Long cartId) {
-        return ResponseEntity.ok(cartItemService.getCartItemsByCartId(cartId));
+    @PostMapping("/create")
+    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem){
+        return ResponseEntity.ok(cartItemService.saveCartItem(cartItem));
     }
 
-    @PostMapping("/{cartId}/products/{productId}")
-    public ResponseEntity<CartItem> addProductToCart(@PathVariable Long cartId, @PathVariable Long productId, @RequestParam int quantity) {
-        return new ResponseEntity<>(cartItemService.addProductToCart(cartId, productId, quantity), HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<List<CartItem>> getAllCartItems(){
+        return ResponseEntity.ok(cartItemService.getAllCartItems());
     }
 
-    @DeleteMapping("/{cartItemId}")
-    public ResponseEntity<Void> removeCartItem(@PathVariable Long cartItemId) {
-        cartItemService.removeCartItem(cartItemId);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<CartItem> getCartItemById(@PathVariable Long id){
+        CartItem cartItem = cartItemService.getCartItemById(id)
+                .orElseThrow(() -> new RuntimeException("Error: CartItem is not found."));
+        return ResponseEntity.ok(cartItem);
     }
 
-    @PutMapping("/{cartItemId}")
-    public ResponseEntity<CartItem> updateCartItemQuantity(@PathVariable Long cartItemId, @RequestParam int quantity) {
-        return ResponseEntity.ok(cartItemService.updateCartItemQuantity(cartItemId, quantity));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCartItem(@PathVariable Long id){
+        cartItemService.deleteCartItem(id);
+        return ResponseEntity.ok("CartItem deleted successfully!");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CartItem> updateCartItemQuantity(@PathVariable Long id, @RequestParam int quantity){
+        return ResponseEntity.ok(cartItemService.updateCartItemQuantity(id, quantity));
     }
 }
 

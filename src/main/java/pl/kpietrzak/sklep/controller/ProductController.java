@@ -1,7 +1,8 @@
 package pl.kpietrzak.sklep.controller;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.kpietrzak.sklep.model.Product;
 import pl.kpietrzak.sklep.service.ProductService;
@@ -14,34 +15,35 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    @PostMapping("/create")
+    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+        return ResponseEntity.ok(productService.saveProduct(product));
+    }
+
+    @GetMapping("/products")
+    public String getAllProducts(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
+        return "product";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
-    }
-
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        return new ResponseEntity<>(productService.createProduct(product), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
-        return ResponseEntity.ok(productService.updateProduct(id, updatedProduct));
+    public ResponseEntity<Product> getProductById(@PathVariable Long id, Model model){
+        Product product = productService.getProductById(id)
+                .orElseThrow(() -> new RuntimeException("Error: Product is not found."));
+        model.addAttribute("product", product);
+        return ResponseEntity.ok(product);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Product deleted successfully!");
     }
 }
 

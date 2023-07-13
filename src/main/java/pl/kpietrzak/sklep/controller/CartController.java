@@ -1,12 +1,12 @@
 package pl.kpietrzak.sklep.controller;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.kpietrzak.sklep.DTO.CartItemDTO;
 import pl.kpietrzak.sklep.model.Cart;
-import pl.kpietrzak.sklep.model.CartItem;
 import pl.kpietrzak.sklep.service.CartService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/carts")
@@ -14,34 +14,46 @@ public class CartController {
 
     private final CartService cartService;
 
+    @Autowired
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 
-    @GetMapping("/{cartId}")
-    public ResponseEntity<Cart> getCartById(@PathVariable Long cartId) {
-        return ResponseEntity.ok(cartService.getCartByUserId(cartId));
+    @PostMapping("/create")
+    public ResponseEntity<Cart> createCart(@RequestBody Cart cart){
+        return ResponseEntity.ok(cartService.saveCart(cart));
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<Cart> createCart(@PathVariable Long userId) {
-        return new ResponseEntity<>(cartService.createCart(userId), HttpStatus.CREATED);
+    @GetMapping
+    public ResponseEntity<List<Cart>> getAllCarts(){
+        return ResponseEntity.ok(cartService.getAllCarts());
     }
 
-    @PostMapping("/{cartId}/items")
-    public ResponseEntity<Cart> addProductToCart(@PathVariable Long cartId, @RequestBody CartItemDTO newCartItem) {
-        return new ResponseEntity<>(cartService.addProductToCart(cartId, newCartItem.getProductId(), newCartItem.getQuantity()), HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<Cart> getCartById(@PathVariable Long id){
+        Cart cart = cartService.getCartById(id)
+                .orElseThrow(() -> new RuntimeException("Error: Cart is not found."));
+        return ResponseEntity.ok(cart);
     }
 
-    @DeleteMapping("/{cartId}/items/{cartItemId}")
-    public ResponseEntity<Void> removeProductFromCart(@PathVariable Long cartItemId) {
-        cartService.removeProductFromCart(cartItemId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCart(@PathVariable Long id){
+        cartService.deleteCart(id);
+        return ResponseEntity.ok("Cart deleted successfully!");
     }
 
-    @DeleteMapping("/{cartId}/items")
-    public ResponseEntity<Void> clearCart(@PathVariable Long cartId) {
-        cartService.clearCart(cartId);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/{cartId}/addItem/{itemId}")
+    public ResponseEntity<Cart> addItemToCart(@PathVariable Long cartId, @PathVariable Long itemId){
+        return ResponseEntity.ok(cartService.addItemToCart(cartId, itemId));
+    }
+
+    @PostMapping("/{cartId}/removeItem/{itemId}")
+    public ResponseEntity<Cart> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long itemId){
+        return ResponseEntity.ok(cartService.removeItemFromCart(cartId, itemId));
+    }
+
+    @PostMapping("/{cartId}/clear")
+    public ResponseEntity<Cart> clearCart(@PathVariable Long cartId){
+        return ResponseEntity.ok(cartService.clearCart(cartId));
     }
 }
