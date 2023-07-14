@@ -33,15 +33,23 @@
             password: password
         };
 
-        fetch('/register', {
+        fetch('/api/users/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error: ' + response.status);
+                }
+            })
             .then(data => {
+                console.log("Rejestracja zakończona pomyślnie, przekierowuję do logowania...");
+                window.location.href = "/login";
             })
             .catch((error) => {
                 console.error('Error:', error);
