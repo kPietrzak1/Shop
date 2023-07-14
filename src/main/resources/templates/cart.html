@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Koszyk - Sklep Online</title>
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/sticky-footer.css}">
     <script src="js/script.js"></script>
 </head>
 <body>
+<div th:replace="~{fragments/header :: header}"></div>
+
 <h1>Koszyk</h1>
 
 <table>
@@ -33,5 +36,10 @@
 <p>Całkowita wartość koszyka: 100.00 zł</p>
 
 <button onclick="checkout()">Przejdź do kasy</button>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
