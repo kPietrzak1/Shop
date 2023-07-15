@@ -1,9 +1,12 @@
 package pl.kpietrzak.sklep.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.kpietrzak.sklep.Utils.SessionUtil;
 import pl.kpietrzak.sklep.model.User;
 import pl.kpietrzak.sklep.service.UserService;
 
@@ -11,13 +14,23 @@ import pl.kpietrzak.sklep.service.UserService;
 public class HomeController {
 
     private final UserService userService;
+    private boolean logged;
 
     public HomeController(UserService userService) {
         this.userService = userService;
     }
     @GetMapping("/")
-    public String home() {
-        return "index";
+    public String home(HttpServletRequest request, Model model) {
+        boolean isUserLogged = SessionUtil.isUserLogged(request);
+
+        model.addAttribute("header", isUserLogged ? "fragments/header_user :: header" : "fragments/header_guest :: header");
+        model.addAttribute("footer", isUserLogged ? "fragments/footer_user :: footer" : "fragments/footer_guest :: footer");
+
+        if (isUserLogged) {
+            return "home_user";
+        } else {
+            return "home_guest";
+        }
     }
 
     @GetMapping("/register")
@@ -70,5 +83,9 @@ public class HomeController {
     @GetMapping("/cart")
     public String showCart() {
         return "cart";
+    }
+
+    public boolean isUserLogged() {
+        return logged;
     }
 }

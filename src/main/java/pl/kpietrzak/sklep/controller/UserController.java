@@ -1,5 +1,6 @@
 package pl.kpietrzak.sklep.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,20 @@ public class UserController {
 
     private final UserService userService;
 
+    @PostMapping(value = "/login")
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
+                        HttpServletRequest request) {
+
+        boolean isAuthenticated = userService.authenticate(username, password);
+
+        if (isAuthenticated) {
+            request.getSession().setAttribute("isUserLogged", true);
+            return "redirect:/";
+        } else {
+            return "redirect:/login";
+        }
+    }
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;

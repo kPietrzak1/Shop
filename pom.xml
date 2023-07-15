@@ -103,6 +103,11 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+        <dependency>
+            <groupId>ru.spb.devclub</groupId>
+            <artifactId>delegating-spring-request-context</artifactId>
+            <version>1.0</version>
+        </dependency>
 	</dependencies>
 
 	<build>

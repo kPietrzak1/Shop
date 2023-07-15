@@ -1,7 +1,6 @@
 package pl.kpietrzak.sklep.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.kpietrzak.sklep.model.User;
 import pl.kpietrzak.sklep.repository.UserRepository;
@@ -37,6 +36,15 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsernameIgnoreCase(username);
+    }
+
+    public boolean authenticate(String username, String password) {
+        User user = userRepository.findByUsernameIgnoreCase(username);
+        if (user == null) {
+            return false;
+        } else {
+            return password.equals(user.getPassword());
+        }
     }
 }
 
