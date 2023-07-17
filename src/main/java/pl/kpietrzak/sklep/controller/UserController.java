@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.kpietrzak.sklep.model.User;
 import pl.kpietrzak.sklep.service.UserService;
 
 import java.util.List;
+
+import static pl.kpietrzak.sklep.controller.HomeController.getUser;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,19 +20,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password,
-                        HttpServletRequest request) {
-
-        boolean isAuthenticated = userService.authenticate(username, password);
-
-        if (isAuthenticated) {
-            request.getSession().setAttribute("isUserLogged", true);
-            return "redirect:/";
-        } else {
-            return "redirect:/login";
-        }
+    @PostMapping("/login")
+    public String login(@RequestParam String username, @RequestParam String password, HttpServletRequest request, Model model) {
+        return getUser(username, password, model, request, userService);
     }
     @Autowired
     public UserController(UserService userService) {

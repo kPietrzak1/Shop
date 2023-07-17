@@ -1,7 +1,6 @@
 package pl.kpietrzak.sklep.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,14 +13,16 @@ import pl.kpietrzak.sklep.service.UserService;
 public class HomeController {
 
     private final UserService userService;
-    private boolean logged;
 
     public HomeController(UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/")
     public String home(HttpServletRequest request, Model model) {
         boolean isUserLogged = SessionUtil.isUserLogged(request);
+        model.addAttribute("isUserLogged", isUserLogged);
+        model.addAttribute("username", request.getSession().getAttribute("username"));
 
         model.addAttribute("header", isUserLogged ? "fragments/header_user :: header" : "fragments/header_guest :: header");
         model.addAttribute("footer", isUserLogged ? "fragments/footer_user :: footer" : "fragments/footer_guest :: footer");
@@ -34,7 +35,7 @@ public class HomeController {
     }
 
     @GetMapping("/register")
-    public String showRegister(){
+    public String showRegister() {
         return "register";
     }
 
@@ -53,21 +54,14 @@ public class HomeController {
     public String showLogin() {
         return "login";
     }
+
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model) {
-        User user = userService.findByUsername(username);
-
-        if (user == null) {
-            model.addAttribute("error", "Nie znaleziono użytkownika");
-            return "login";
-        }
-
-        if (!user.getPassword().equals(password)) {
-            model.addAttribute("error", "Niepoprawne hasło");
-            return "login";
-        }
-
-        return "redirect:/";
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
+                        Model model,
+                        HttpServletRequest request) {
+        request.getSession().setAttribute("username", username);
+        return getUser(username, password, model, request, userService);
     }
 
     @GetMapping("/product")
@@ -85,7 +79,21 @@ public class HomeController {
         return "cart";
     }
 
-    public boolean isUserLogged() {
-        return logged;
+    static String getUser(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request, UserService userService) {
+        User user = userService.findByUsername(username);
+
+        if (user == null) {
+            model.addAttribute("error", "Nie znaleziono użytkownika");
+            return "login";
+        }
+
+        if (!user.getPassword().equals(password)) {
+            model.addAttribute("error", "Niepoprawne hasło");
+            return "login";
+        }
+
+        request.getSession().setAttribute("isUserLogged", true);
+        request.getSession().setAttribute("username", username);
+        return "home_user";
     }
 }
