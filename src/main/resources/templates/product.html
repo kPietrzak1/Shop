@@ -15,9 +15,10 @@
         <h3>Kategorie</h3>
         <ul>
             <li th:each="category : ${categories}">
-                <a th:href="@{/category/{id}(id=${category.id})}" th:text="${category.name}"></a>
+                <a th:href="@{/api/products/category/{categoryName}(categoryName=${category.name})}" th:text="${category.name}"></a>
             </li>
         </ul>
+
     </div>
     <div class="col-9">
         <h1>Products</h1>
