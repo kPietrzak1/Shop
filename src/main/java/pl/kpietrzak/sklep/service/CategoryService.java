@@ -1,5 +1,6 @@
 package pl.kpietrzak.sklep.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional
     public Category saveCategory(Category category){
         return categoryRepository.save(category);
     }
@@ -30,6 +32,7 @@ public class CategoryService {
         return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
+    @Transactional
     public void deleteCategory(Long id){
         categoryRepository.deleteById(id);
     }

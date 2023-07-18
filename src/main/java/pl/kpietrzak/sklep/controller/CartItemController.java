@@ -1,7 +1,5 @@
 package pl.kpietrzak.sklep.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.kpietrzak.sklep.model.CartItem;
@@ -15,7 +13,6 @@ public class CartItemController {
 
     private final CartItemService cartItemService;
 
-    @Autowired
     public CartItemController(CartItemService cartItemService) {
         this.cartItemService = cartItemService;
     }

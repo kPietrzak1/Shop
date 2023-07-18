@@ -1,5 +1,6 @@
 package pl.kpietrzak.sklep.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.kpietrzak.sklep.model.User;
@@ -18,6 +19,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public User saveUser(User user) {
         return userRepository.save(user);
     }
@@ -30,6 +32,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
@@ -40,11 +43,7 @@ public class UserService {
 
     public boolean authenticate(String username, String password) {
         User user = userRepository.findByUsernameIgnoreCase(username);
-        if (user == null) {
-            return false;
-        } else {
-            return password.equals(user.getPassword());
-        }
+        return user != null && user.getPassword().equals(password);
     }
 }
 

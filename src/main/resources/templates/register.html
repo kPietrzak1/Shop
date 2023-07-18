@@ -8,7 +8,7 @@
     <script src="js/script.js"></script>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="${isUserLogged} ? ~{fragments/header_user :: header} : ~{fragments/header_guest :: header}"></div>
 <h1>Rejestracja</h1>
 
 <form id="registerForm">
@@ -23,42 +23,10 @@
 
 <p>Jeżeli masz już konto, <a href="login">zaloguj się tutaj</a>.</p>
 
-<script>
-    document.getElementById("registerForm").addEventListener("submit", function(event) {
-        event.preventDefault();
+<script src="js/register.js"></script>
 
-        let username = document.getElementById("username").value;
-        let password = document.getElementById("password").value;
 
-        let data = {
-            username: username,
-            password: password
-        };
-
-        fetch('/api/users/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Error: ' + response.status);
-                }
-            })
-            .then(data => {
-                console.log("Rejestracja zakończona pomyślnie, przekierowuję do logowania...");
-                window.location.href = "/login";
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    });
-</script>
-<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

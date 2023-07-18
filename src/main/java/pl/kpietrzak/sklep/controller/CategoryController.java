@@ -1,8 +1,6 @@
 package pl.kpietrzak.sklep.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.kpietrzak.sklep.model.Category;
 import pl.kpietrzak.sklep.service.CategoryService;

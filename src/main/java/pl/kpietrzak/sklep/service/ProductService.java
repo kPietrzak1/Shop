@@ -1,5 +1,6 @@
 package pl.kpietrzak.sklep.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.kpietrzak.sklep.model.Product;
@@ -18,6 +19,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @Transactional
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
@@ -30,8 +32,10 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
 }
 

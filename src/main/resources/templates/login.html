@@ -8,7 +8,7 @@
     <script src="js/script.js"></script>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="${isUserLogged} ? ~{fragments/header_user :: header} : ~{fragments/header_guest :: header}"></div>
 <h1>Logowanie</h1>
 
 <form action="/login" method="post">
@@ -22,7 +22,7 @@
 </form>
 
 <p>Jeżeli nie masz jeszcze konta, <a href="register">zarejestruj się tutaj</a>.</p>
-<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

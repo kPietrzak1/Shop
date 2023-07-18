@@ -1,11 +1,15 @@
 package pl.kpietrzak.sklep.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.kpietrzak.sklep.Utils.SessionUtil;
+import pl.kpietrzak.sklep.exceptions.ProductNotFoundException;
+import pl.kpietrzak.sklep.model.ApiError;
 import pl.kpietrzak.sklep.model.Category;
 import pl.kpietrzak.sklep.model.User;
 import pl.kpietrzak.sklep.service.CategoryService;
@@ -18,10 +22,12 @@ public class HomeController {
 
     private final UserService userService;
     private final CategoryService categoryService;
+    private final SessionUtil sessionUtil;
 
-    public HomeController(UserService userService, CategoryService categoryService) {
+    public HomeController(UserService userService, CategoryService categoryService, SessionUtil sessionUtil) {
         this.userService = userService;
         this.categoryService = categoryService;
+        this.sessionUtil = sessionUtil;
     }
 
     @GetMapping("/")
@@ -43,14 +49,14 @@ public class HomeController {
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String registerUser(@RequestBody User user) {
+    public ResponseEntity<ApiError> registerUser(@RequestBody User user) {
         User existingUser = userService.findByUsername(user.getUsername());
 
         if (existingUser != null) {
-            return "register";
+            return new ResponseEntity<>(new ApiError(HttpStatus.BAD_REQUEST, "Username already taken."), HttpStatus.BAD_REQUEST);
         }
         userService.saveUser(user);
-        return "redirect:/login";
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/login")
@@ -63,8 +69,22 @@ public class HomeController {
                         @RequestParam String password,
                         Model model,
                         HttpServletRequest request) {
+        if (!userService.authenticate(username, password)) {
+            model.addAttribute("error", "Invalid username or password.");
+            return "login";
+        }
+
+        request.getSession().setAttribute("isUserLogged", true);
         request.getSession().setAttribute("username", username);
-        return getUser(username, password, model, request, userService);
+        return "redirect:/";
+    }
+
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request, Model model) {
+        request.getSession().invalidate();
+        model.addAttribute("isUserLogged", false);
+        return "/home_guest";
     }
 
     @GetMapping("/product")
@@ -78,6 +98,11 @@ public class HomeController {
     @GetMapping("/category/{id}")
     public String showCategory(@PathVariable Long id, Model model) {
         Category category = categoryService.getCategoryById(id);
+
+        if (category == null) {
+            throw new ProductNotFoundException("Product not found.");
+        }
+
         model.addAttribute("category", category);
         return "category";
     }
@@ -107,7 +132,7 @@ public class HomeController {
 
     @ModelAttribute("isUserLogged")
     public boolean isUserLogged(HttpServletRequest request, Model model) {
-        boolean isUserLogged = SessionUtil.isUserLogged(request);
+        boolean isUserLogged = sessionUtil.isUserLogged(request);
         model.addAttribute("isUserLogged", isUserLogged);
         model.addAttribute("username", request.getSession().getAttribute("username"));
         return isUserLogged;

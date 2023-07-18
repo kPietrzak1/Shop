@@ -19,9 +19,23 @@
                     Konto
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="/login">Wyloguj</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button class="dropdown-item" type="submit" id="logout-button">Wyloguj</button>
+                    </form>
                 </div>
             </li>
         </ul>
     </div>
 </nav>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#logout-button").click(function(e){
+            e.preventDefault();
+            $.post("/logout", function() {
+                location.reload();
+            });
+        });
+    });
+</script>
