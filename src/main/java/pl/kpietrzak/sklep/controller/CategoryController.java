@@ -16,25 +16,25 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @PostMapping("/create")
     public ResponseEntity<Category> createCategory(@RequestBody Category category){
-        return ResponseEntity.ok(categoryService.saveCategory(category));
+        Category createdCategory = categoryService.saveCategory(category);
+        return ResponseEntity.ok(createdCategory);
     }
 
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories(){
-        return ResponseEntity.ok(categoryService.getAllCategories());
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id, Model model){
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id){
         Category category = categoryService.getCategoryById(id);
-        model.addAttribute("category", category);
         return ResponseEntity.ok(category);
     }
 
@@ -44,4 +44,5 @@ public class CategoryController {
         return ResponseEntity.ok("Category deleted successfully!");
     }
 }
+
 

@@ -8,34 +8,28 @@
     <script src="js/script.js"></script>
 </head>
 <body>
-<div th:replace="~{fragments/header :: header}"></div>
-<h1>Products</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${products}" var="product">
-        <tr>
-            <td>${product.name}</td>
-            <td>${product.description}</td>
-            <td>${product.price}</td>
-            <td>
-                <a href="${pageContext.request.contextPath}/products/edit/${product.id}">Edit</a> |
-                <a href="${pageContext.request.contextPath}/products/delete/${product.id}">Delete</a>
-            </td>
-        </tr>
-    </c:forEach>
-    </tbody>
-</table>
+<div th:replace="${isUserLogged} ? ~{fragments/header_user :: header} : ~{fragments/header_guest :: header}"></div>
 
-<a href="${pageContext.request.contextPath}/products/new">Create New Product</a>
-<div th:replace="~{fragments/footer :: footer}"></div>
+<div class="row">
+    <div class="col-3">
+        <h3>Kategorie</h3>
+        <ul>
+            <li th:each="category : ${categories}">
+                <a th:href="@{/category/{id}(id=${category.id})}" th:text="${category.name}"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-9">
+        <h1>Products</h1>
+        <table>
+            <!-- tabela z produktami -->
+        </table>
+
+        <a href="${pageContext.request.contextPath}/products/new">Create New Product</a>
+    </div>
+</div>
+
+<div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

@@ -6,28 +6,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.kpietrzak.sklep.Utils.SessionUtil;
+import pl.kpietrzak.sklep.model.Category;
 import pl.kpietrzak.sklep.model.User;
+import pl.kpietrzak.sklep.service.CategoryService;
 import pl.kpietrzak.sklep.service.UserService;
+
+import java.util.List;
 
 @Controller
 public class HomeController {
 
     private final UserService userService;
+    private final CategoryService categoryService;
 
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, CategoryService categoryService) {
         this.userService = userService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/")
     public String home(HttpServletRequest request, Model model) {
-        boolean isUserLogged = SessionUtil.isUserLogged(request);
-        model.addAttribute("isUserLogged", isUserLogged);
-        model.addAttribute("username", request.getSession().getAttribute("username"));
+        boolean userLogged = isUserLogged(request, model);
+        model.addAttribute("header", userLogged ? "fragments/header_user :: header" : "fragments/header_guest :: header");
+        model.addAttribute("footer", userLogged ? "fragments/footer_user :: footer" : "fragments/footer_guest :: footer");
 
-        model.addAttribute("header", isUserLogged ? "fragments/header_user :: header" : "fragments/header_guest :: header");
-        model.addAttribute("footer", isUserLogged ? "fragments/footer_user :: footer" : "fragments/footer_guest :: footer");
-
-        if (isUserLogged) {
+        if (userLogged) {
             return "home_user";
         } else {
             return "home_guest";
@@ -65,12 +68,17 @@ public class HomeController {
     }
 
     @GetMapping("/product")
-    public String showProduct() {
+    public String showProduct(Model model) {
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
         return "product";
     }
 
-    @GetMapping("/category")
-    public String showCategory() {
+
+    @GetMapping("/category/{id}")
+    public String showCategory(@PathVariable Long id, Model model) {
+        Category category = categoryService.getCategoryById(id);
+        model.addAttribute("category", category);
         return "category";
     }
 
@@ -95,5 +103,13 @@ public class HomeController {
         request.getSession().setAttribute("isUserLogged", true);
         request.getSession().setAttribute("username", username);
         return "home_user";
+    }
+
+    @ModelAttribute("isUserLogged")
+    public boolean isUserLogged(HttpServletRequest request, Model model) {
+        boolean isUserLogged = SessionUtil.isUserLogged(request);
+        model.addAttribute("isUserLogged", isUserLogged);
+        model.addAttribute("username", request.getSession().getAttribute("username"));
+        return isUserLogged;
     }
 }
