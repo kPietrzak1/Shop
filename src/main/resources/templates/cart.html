@@ -12,7 +12,7 @@
 
 <h1>Koszyk</h1>
 
-<table>
+<table id="cart-table">
     <thead>
     <tr>
         <th>Nazwa produktu</th>
@@ -22,22 +22,51 @@
         <th></th>
     </tr>
     </thead>
-    <tbody>
-    <tr>
-        <td>Produkt A</td>
-        <td>2</td>
-        <td>50.00 zł</td>
-        <td>100.00 zł</td>
-        <td><button onclick="removeFromCart('Produkt A')">Usuń</button></td>
-    </tr>
+    <tbody id="cart-items">
     </tbody>
 </table>
 
-<p>Całkowita wartość koszyka: 100.00 zł</p>
+<p id="cart-total">Całkowita wartość koszyka: </p>
 
 <button onclick="checkout()">Przejdź do kasy</button>
 
 <div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
+
+<script>
+    const cartId = 1;
+
+    function removeFromCart(itemId) {
+        fetch(`/api/carts/${cartId}/removeItem/${itemId}`, {
+            method: 'POST'
+        }).then(response => {
+            if(response.status === 200) {
+                location.reload();
+            } else {
+                alert("Nie udało się usunąć przedmiotu z koszyka!");
+            }
+        });
+    }
+
+    const cartItemsElement = document.getElementById('cart-items');
+    const cartTotalElement = document.getElementById('cart-total');
+    fetch(`/api/carts/${cartId}`)
+        .then(response => response.json())
+        .then(cart => {
+            cart.items.forEach(item => {
+                const itemElement = document.createElement('tr');
+                itemElement.innerHTML = `
+                    <td>${item.productName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.productPrice} zł</td>
+                    <td>${item.totalPrice} zł</td>
+                    <td><button onclick="removeFromCart(${item.id})">Usuń</button></td>
+                `;
+                cartItemsElement.appendChild(itemElement);
+            });
+
+            cartTotalElement.textContent += `${cart.totalPrice} zł`;
+        });
+</script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
