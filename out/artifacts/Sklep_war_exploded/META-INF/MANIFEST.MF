@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: 48503
+Build-Jdk: 17.0.5
+Implementation-Title: Sklep
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: pl.kPietrzak
+Main-Class: ${start-class}
+
