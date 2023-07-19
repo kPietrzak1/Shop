@@ -11,8 +11,10 @@ import pl.kpietrzak.sklep.Utils.SessionUtil;
 import pl.kpietrzak.sklep.exceptions.ProductNotFoundException;
 import pl.kpietrzak.sklep.model.ApiError;
 import pl.kpietrzak.sklep.model.Category;
+import pl.kpietrzak.sklep.model.Product;
 import pl.kpietrzak.sklep.model.User;
 import pl.kpietrzak.sklep.service.CategoryService;
+import pl.kpietrzak.sklep.service.ProductService;
 import pl.kpietrzak.sklep.service.UserService;
 
 import java.util.List;
@@ -22,12 +24,14 @@ public class HomeController {
 
     private final UserService userService;
     private final CategoryService categoryService;
+    private final ProductService productService;
     private final SessionUtil sessionUtil;
 
-    public HomeController(UserService userService, CategoryService categoryService, SessionUtil sessionUtil) {
+    public HomeController(UserService userService, CategoryService categoryService, SessionUtil sessionUtil, ProductService productService) {
         this.userService = userService;
         this.categoryService = categoryService;
         this.sessionUtil = sessionUtil;
+        this.productService = productService;
     }
 
     @GetMapping("/")
@@ -92,6 +96,13 @@ public class HomeController {
         List<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         return "product";
+    }
+
+    @GetMapping("/product/byCategory")
+    public String getProductsByCategory(@RequestParam List<Long> categories, Model model) {
+        List<Product> products = productService.findByCategoryIds(categories);
+        model.addAttribute("products", products);
+        return "fragments/product_list";
     }
 
 

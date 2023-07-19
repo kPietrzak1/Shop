@@ -1,0 +1,20 @@
+<div th:fragment="product_list">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Cena</th>
+            <th>Kategoria</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.description}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.category.name}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

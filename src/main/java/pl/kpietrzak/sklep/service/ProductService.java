@@ -32,6 +32,10 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    public List<Product> findByCategoryIds(List<Long> categoryIds) {
+        return productRepository.findByCategoryIdIn(categoryIds);
+    }
+
     @Transactional
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
