@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Koszyk - Sklep Online</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script src="js/script.js"></script>
+</head>
+<body>
+<h1>Koszyk</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nazwa produktu</th>
+        <th>Ilość</th>
+        <th>Cena za sztukę</th>
+        <th>Łączna cena</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Produkt A</td>
+        <td>2</td>
+        <td>50.00 zł</td>
+        <td>100.00 zł</td>
+        <td><button onclick="removeFromCart('Produkt A')">Usuń</button></td>
+    </tr>
+    </tbody>
+</table>
+
+<p>Całkowita wartość koszyka: 100.00 zł</p>
+
+<button onclick="checkout()">Przejdź do kasy</button>
+</body>
+</html>

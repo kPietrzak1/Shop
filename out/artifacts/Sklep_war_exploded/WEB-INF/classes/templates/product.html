@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+</head>
+<body>
+<h1>Products</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:forEach items="${products}" var="product">
+        <tr>
+            <td>${product.name}</td>
+            <td>${product.description}</td>
+            <td>${product.price}</td>
+            <td>
+                <a href="${pageContext.request.contextPath}/products/edit/${product.id}">Edit</a> |
+                <a href="${pageContext.request.contextPath}/products/delete/${product.id}">Delete</a>
+            </td>
+        </tr>
+    </c:forEach>
+    </tbody>
+</table>
+
+<a href="${pageContext.request.contextPath}/products/new">Create New Product</a>
+</body>
+</html>

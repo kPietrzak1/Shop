@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rejestracja - Sklep Online</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script src="js/script.js"></script>
+</head>
+<body>
+<h1>Rejestracja</h1>
+
+<form id="registerForm">
+    <label for="username">Nazwa użytkownika:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Hasło:</label>
+    <input type="password" id="password" name="password" required>
+
+    <input type="submit" value="Zarejestruj">
+</form>
+
+<p>Jeżeli masz już konto, <a href="login">zaloguj się tutaj</a>.</p>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+
+        let data = {
+            username: username,
+            password: password
+        };
+
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+</body>
+</html>
