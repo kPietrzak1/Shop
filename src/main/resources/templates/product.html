@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <body>
+
 <div th:replace="${isUserLogged} ? ~{fragments/header_user :: header} : ~{fragments/header_guest :: header}"></div>
 
 <div class="row">
@@ -20,37 +21,87 @@
             </li>
         </ul>
     </div>
-    <div class="col-9" id="product-list">
+    <div class="col-9">
         <h1>Produkty</h1>
-        <div th:replace="fragments/product_list :: product_list"></div>
-
-        <a href="${pageContext.request.contextPath}/products/new">Create New Product</a>
+        <form id="product-form">
+            <input type="text" id="product-name" placeholder="Nazwa produktu">
+            <input type="text" id="product-description" placeholder="Opis produktu">
+            <input type="number" id="product-price" placeholder="Cena produktu">
+            <input type="text" id="product-category_id" placeholder="Kategoria">
+            <button type="submit">Utwórz produkt</button>
+        </form>
+        <div id="product-display-area">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Nazwa produktu</th>
+                    <th>Cena</th>
+                    <th>Opis</th>
+                </tr>
+                </thead>
+                <tbody id="product-list">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.category-checkbox').change(function() {
-            var selectedCategories = [];
-            $('.category-checkbox:checked').each(function() {
-                selectedCategories.push($(this).val());
+    const productList = document.getElementById('product-list');
+    fetch('/api/products/products')
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Nie udało się pobrać produktów.');
+            }
+        })
+        .then(products => {
+            products.forEach(product => {
+                const newProductElement = document.createElement('tr');
+                newProductElement.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.price}</td>
+                    <td>${product.description}</td>
+                `;
+                productList.appendChild(newProductElement);
             });
-            $.ajax({
-                url: "/product/byCategory",
-                method: "GET",
-                data: {
-                    categories: selectedCategories
-                },
-                success: function(data) {
-                    $('#product-list').html(data);
-                }
-            });
+        });
+
+    document.getElementById('product-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('product-name').value;
+        const price = document.getElementById('product-price').value;
+        const description = document.getElementById('product-description').value;
+
+        fetch('/api/products/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: name, price: price, description: description})
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                alert('Nie udało się utworzyć produktu.');
+                throw new Error('Nie udało się utworzyć produktu.');
+            }
+        }).then(product => {
+            const newProductElement = document.createElement('tr');
+            newProductElement.innerHTML = `
+                <td>${product.name}</td>
+                <td>${product.price}</td>
+                <td>${product.description}</td>
+            `;
+            productList.appendChild(newProductElement);
         });
     });
 </script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

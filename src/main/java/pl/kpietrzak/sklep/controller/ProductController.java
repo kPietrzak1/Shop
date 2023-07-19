@@ -20,14 +20,14 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody Product product){
-        return ResponseEntity.ok(productService.saveProduct(product));
+        Product createdProduct = productService.saveProduct(product);
+        return ResponseEntity.ok(createdProduct);
     }
 
+
     @GetMapping("/products")
-    public String getAllProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
-        model.addAttribute("products", products);
-        return "product";
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
     @GetMapping("/{id}")
@@ -39,10 +39,8 @@ public class ProductController {
     }
 
     @GetMapping("/category/{categoryName}")
-    public String getProductsByCategory(@PathVariable String categoryName, Model model){
-        List<Product> products = productService.getProductsByCategoryName(categoryName);
-        model.addAttribute("products", products);
-        return "product";
+    public List<Product> getProductsByCategory(@PathVariable String categoryName){
+        return productService.getProductsByCategoryName(categoryName);
     }
 
 

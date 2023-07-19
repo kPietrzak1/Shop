@@ -39,6 +39,21 @@
 
 <div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
+<script>
+    function removeFromCart(itemId) {
+        const cartId = 1;
+        fetch(`/api/carts/${cartId}/removeItem/${itemId}`, {
+            method: 'POST'
+        }).then(response => {
+            if(response.status === 200) {
+                location.reload();
+            } else {
+                alert("Nie udało się usunąć przedmiotu z koszyka!");
+            }
+        });
+    }
+</script>
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
