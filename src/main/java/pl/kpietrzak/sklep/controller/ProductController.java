@@ -42,7 +42,7 @@ public class ProductController {
     public String getProductsByCategory(@PathVariable String categoryName, Model model){
         List<Product> products = productService.getProductsByCategoryName(categoryName);
         model.addAttribute("products", products);
-        return "product";  // zwraca widok produktu
+        return "product";
     }
 
 
@@ -50,12 +50,6 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully!");
-    }
-
-    @GetMapping("/category/{categoryName}")
-    public ResponseEntity<List<Product>> getProductsByCategoryName(@PathVariable String categoryName){
-        List<Product> products = productService.getProductsByCategoryName(categoryName);
-        return ResponseEntity.ok(products);
     }
 }
 
