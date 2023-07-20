@@ -5,23 +5,48 @@
     <title>Sklep Online</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/css/sticky-footer.css}">
+    <style>
+        .center-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 120px);
+        }
+
+        .center-screen form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .center-screen form label,
+        .center-screen form input {
+            margin-bottom: 15px;
+        }
+    </style>
     <script src="js/script.js"></script>
 </head>
 <body>
 <div th:replace="${isUserLogged} ? ~{fragments/header_user :: header} : ~{fragments/header_guest :: header}"></div>
-<h1>Logowanie</h1>
 
-<form action="/login" method="post">
-    <label for="username">Nazwa użytkownika:</label>
-    <input type="text" id="username" name="username" required>
+<div class="center-screen">
+    <h1>Logowanie</h1>
 
-    <label for="password">Hasło:</label>
-    <input type="password" id="password" name="password" required>
+    <form action="/login" method="post">
+        <label for="username">Nazwa użytkownika:</label>
+        <input type="text" id="username" name="username" required>
 
-    <input type="submit" value="Zaloguj">
-</form>
+        <label for="password">Hasło:</label>
+        <input type="password" id="password" name="password" required>
 
-<p>Jeżeli nie masz jeszcze konta, <a href="register">zarejestruj się tutaj</a>.</p>
+        <input type="submit" value="Zaloguj">
+    </form>
+
+    <p>Jeżeli nie masz jeszcze konta, <a href="register">zarejestruj się tutaj</a>.</p>
+</div>
+
 <div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
