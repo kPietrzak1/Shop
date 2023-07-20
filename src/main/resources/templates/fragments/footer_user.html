@@ -2,9 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="footer">
-    <footer class="footer mt-auto py-3">
+    <footer class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom py-3">
         <div class="container">
-            <span class="text-muted"> kPietrzak &copy; 2023</span>
+            <a class="navbar-brand" href="#">Sklep Online</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            </div>
+            <span class="navbar-text text-muted"> kPietrzak &copy; 2023</span>
         </div>
     </footer>
 </div>

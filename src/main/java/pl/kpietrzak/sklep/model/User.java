@@ -25,5 +25,8 @@ public class User {
     @Size(min = 6, max = 100)
     private String password;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
+
 }
 

@@ -24,7 +24,6 @@ public class Product {
     private String description;
 
     @ManyToOne
-    @NotNull
     private Category category;
 }
 

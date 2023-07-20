@@ -4,13 +4,23 @@
     <meta charset="UTF-8">
     <title>Sklep Online</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="js/script.js"></script>
+    <style>
+        .center-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 120px);
+        }
+    </style>
 </head>
 <body>
 <div th:replace="${isUserLogged} ? ~{fragments/header_user :: header} : ~{fragments/header_guest :: header}"></div>
 
-<h1>Witamy w naszym sklepie online z odzieżą damską!</h1>
-<p>Tutaj znajdziesz najnowsze trendy i stylowe ciuchy dla siebie. Zaloguj się lub zarejestruj, aby rozpocząć zakupy.</p>
+<div class="center-screen">
+    <h1>Witamy w naszym sklepie online z odzieżą damską!</h1>
+    <p>Tutaj znajdziesz najnowsze trendy i stylowe ciuchy dla siebie. Zaloguj się lub zarejestruj, aby rozpocząć zakupy.</p>
+</div>
 
 <div th:replace="${isUserLogged} ? ~{fragments/footer_user :: footer} : ~{fragments/footer_guest :: footer}"></div>
 
